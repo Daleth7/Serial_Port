@@ -46,11 +46,10 @@ namespace RS_232{
         baud_rate new_baud_rate,
         size_type new_read_rate
     ){
-        if(port_number == m_port)
+        if(port_number == m_port && m_connected)
             return true;
 
         m_connected = false;
-        m_port = port_number;
         m_baud_rate = new_baud_rate;
         m_read_rate = new_read_rate;
 
@@ -89,6 +88,7 @@ namespace RS_232{
              }
         }
 
+        m_port = port_number;
         return m_connected = true;
     }
 
