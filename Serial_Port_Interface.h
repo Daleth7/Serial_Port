@@ -2,6 +2,7 @@
 #define ABSTRACT_SERIAL_PORT_COMMUNICATIONS_CLASS_H___
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 
 namespace RS_232{
@@ -95,6 +96,7 @@ namespace RS_232{
             virtual Serial_Port& operator<<(str_type) = 0;
             virtual Serial_Port& operator>>(str_type&) = 0;
 
+        //Constructors and destructor
             Serial_Port()
                 : Serial_Port(-1, br_110, 0)
             {}
