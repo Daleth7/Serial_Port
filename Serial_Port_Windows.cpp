@@ -92,8 +92,11 @@ namespace RS_232{
         return m_connected = true;
     }
 
-    bool Serial_Port_Windows::close()
-        {return !( m_connected && (m_connected = !CloseHandle(m_handle)) );}
+    bool Serial_Port_Windows::close(){
+        if(!m_connected || !(m_connected = !CloseHandle(m_handle)))
+            m_port = -1;
+        return !m_connected;
+    }
 
     bool Serial_Port_Windows::change(
         count_type port_number,
