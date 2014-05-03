@@ -17,14 +17,26 @@ namespace RS_232{
 
             class error_type{
                 public:
+                    enum class code : std::int_least8_t{
+                        read, write, open, close, unavailable,
+                        overflow, hardware,
+                        unknown, os_specific,
+                        none
+                    };
+
+                    code get_code()const
+                        {return m_code;}
+
                     virtual const vol_str_type& what()const
                         {return m_msg;}
 
                     error_type()
-                        : m_msg("No error.")
+                        : m_code(code::none)
+                        , m_msg("No error.")
                     {}
-                    error_type(const vol_str_type& s)
-                        : m_msg(s)
+                    error_type(code c, const vol_str_type& s)
+                        : m_code(c)
+                        , m_msg(s)
                     {}
                     error_type(const error_type&)               = default;
                     error_type(error_type&&)                    = default;
@@ -32,7 +44,8 @@ namespace RS_232{
                     error_type& operator=(error_type&&)         = default;
                     virtual ~error_type(){}
                 private:
-                    vol_str_type m_msg;
+                    code            m_code;
+                    vol_str_type    m_msg;
             };
 
         //Use standard baud rates of a weakly-typed enumeration
@@ -55,12 +68,20 @@ namespace RS_232{
             };
 
         //Read-only
+            bool good()
+                {return m_error.get_code() == error_type::code::none;}
+            bool fail()
+                {return !(this->good());}
             bool is_connected()const
                 {return m_connected;}
             count_type number()const
                 {return m_port;}
             const error_type& error()const
                 {return m_error;}
+            baud_rate baud()const
+                {return m_baud_rate;}
+            size_type read_rate()const
+                {return m_read_rate;}
 
         //Settings modifiers
             void set_baud_rate(baud_rate new_rate)
@@ -71,7 +92,7 @@ namespace RS_232{
                 {m_error = error_type();}
             virtual const error_type& check_status() = 0;
 
-        //C-style I/O
+        //Byte by byte I/O
             virtual bool open(count_type, baud_rate, size_type = 0) = 0;
             virtual bool close() = 0;
             virtual bool change(count_type, baud_rate, size_type = 0) = 0;
@@ -88,6 +109,15 @@ namespace RS_232{
                 size_type = 0,
                 size_type* = nullptr //Optional request to get number of
                                     // bytes read
+            ) = 0;
+            virtual Serial_Port& getline(
+                byte_type* buf,
+                size_type num_to_read,
+                byte_type delim = '\0'
+            ) = 0;
+            virtual Serial_Port& ignore(
+                size_type num_to_ignore,
+                byte_type delim = '\0'
             ) = 0;
 
         //Stream I/O
@@ -125,5 +155,10 @@ namespace RS_232{
             error_type  m_error;
     };
 }
+
+Serial_Port& getline(
+    Serial_Port&, Serial_Port::vol_str_type&,
+    m Serial_Port::byte_type delim = '\0'
+);
 
 #endif

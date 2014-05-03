@@ -86,6 +86,15 @@ namespace RS_232{
                 size_type* = nullptr //Optional request to get number of
                                     // bytes read
             ) final override;
+            virtual Serial_Port& getline(
+                byte_type* buf,
+                size_type num_to_read,
+                byte_type delim = '\0'
+            ) final override;
+            virtual Serial_Port& ignore(
+                size_type num_to_ignore,
+                byte_type delim = '\0'
+            ) final override;
 
         //Stream I/O
             virtual Serial_Port_Windows& operator<<(byte_type) final override;
