@@ -199,7 +199,7 @@ namespace RS_232{
         return false;
     }
 
-    Serial_Port& getline(
+    Serial_Port& Serial_Port_Windows::getline(
         byte_type* buf,
         size_type num_to_read,
         byte_type delim
@@ -211,7 +211,7 @@ namespace RS_232{
         return *this;
     }
 
-    Serial_Port& ignore(
+    Serial_Port& Serial_Port_Windows::ignore(
         size_type num_to_ignore,
         byte_type delim
     ){
@@ -244,6 +244,17 @@ namespace RS_232{
         return *this;
     }
 
+    //Other modifiers
+    bool Serial_Port_Windows::flush(bool output, bool force_abort)
+        {return output ? flush_output(force_abort) : flush_input(force_abort);}
+
+    bool Serial_Port_Windows::flush_input(bool force_abort)
+        {return PurgeComm(m_handle, force_abort ? PURGE_RXABORT : PURGE_RXCLEAR);}
+
+    bool Serial_Port_Windows::flush_output(bool force_abort)
+        {return PurgeComm(m_handle, force_abort ? PURGE_TXABORT : PURGE_TXCLEAR);}
+
+    //Constructors and destructor
     Serial_Port_Windows::Serial_Port_Windows(
         count_type port_number,
         baud_rate new_baud_rate,

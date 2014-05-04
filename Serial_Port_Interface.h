@@ -126,6 +126,17 @@ namespace RS_232{
             virtual Serial_Port& operator<<(str_type) = 0;
             virtual Serial_Port& operator>>(str_type&) = 0;
 
+        //Other modifiers
+            //Returns if flushing is successful or not
+            virtual bool flush(
+                bool output = true,
+                bool force_abort = false    //Terminates read or write
+                                            //  operations even if they
+                                            //  have not been completed.
+            ) = 0;
+            virtual bool flush_input(bool force_abort = false) = 0;
+            virtual bool flush_output(bool force_abort = false) = 0;
+
         //Constructors and destructor
             Serial_Port()
                 : Serial_Port(-1, br_110, 0)

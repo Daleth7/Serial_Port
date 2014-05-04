@@ -10,23 +10,27 @@ namespace RS_232{
         public:
         //Types and aliases
 /*  Inherited
-            using count_type    = unsigned short;
-            using byte_type     = std::int_least8_t;
-            using size_type     = std::uint_fast16_t;
-            using str_type      = std::basic_string<byte_type>;
-            using vol_str_type  = std::string;
+            using count_type;
+            using byte_type;
+            using size_type;
+            using str_type;
+            using vol_str_type;
 
             class error_type{
                 public:
+                    enum class code{
+                        read, write, open, close, unavailable,
+                        overflow, hardware,
+                        unknown, os_specific,
+                        none
+                    };
+
+                    code get_code()const;
+
                     virtual const vol_str_type& what()const;
 
                     error_type();
-                    error_type(const vol_str_type& s);
-                    error_type(const error_type&)               = default;
-                    error_type(error_type&&)                    = default;
-                    error_type& operator=(const error_type&)    = default;
-                    error_type& operator=(error_type&&)         = default;
-                    virtual ~error_type(){}
+                    error_type(code c, const vol_str_type& s);
             };
 
         //Use standard baud rates of a weakly-typed enumeration
@@ -58,6 +62,8 @@ namespace RS_232{
             bool is_connected()const;
             count_type number()const;
             const error_type& error()const;
+            baud_rate baud()const;
+            size_type read_rate()const;
 */
 
         //Settings modifiers
@@ -102,6 +108,18 @@ namespace RS_232{
             virtual Serial_Port_Windows& operator<<(str_type) final override;
             virtual Serial_Port_Windows& operator>>(str_type&) final override;
 
+        //Other modifiers
+            //Returns if flushing is successful or not
+            virtual bool flush(
+                bool output = true,
+                bool force_abort = false    //Terminates read or write
+                                            //  operations even if they
+                                            //  have not been completed.
+            ) final override;
+            virtual bool flush_input(bool force_abort = false) final override;
+            virtual bool flush_output(bool force_abort = false) final override;
+
+        //Constructors and destructor
             Serial_Port_Windows(count_type, baud_rate, size_type = 0);
             Serial_Port_Windows(const Serial_Port_Windows&)             = default;
             Serial_Port_Windows(Serial_Port_Windows&&)                  = default;
