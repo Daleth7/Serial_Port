@@ -1,12 +1,12 @@
-#ifndef WINDOWS_SERIAL_PORT_COMMUNICATIONS_CLASS_H___
-#define WINDOWS_SERIAL_PORT_COMMUNICATIONS_CLASS_H___
+#ifndef Linux_SERIAL_PORT_COMMUNICATIONS_CLASS_H___
+#define Linux_SERIAL_PORT_COMMUNICATIONS_CLASS_H___
 
 #include "Serial_Port_Interface.h"
 
-#include <windows.h>
+#include <termios.h>
 
 namespace RS_232{
-    class Serial_Port_Windows : public Serial_Port{
+    class Serial_Port_Linux : public Serial_Port{
         public:
         //Types and aliases
 /*  Inherited
@@ -53,9 +53,8 @@ namespace RS_232{
             };
 */
 
-        using settings_type = DCB;
-        using timeout_type  = COMMTIMEOUTS;
-        using handle_type   = HANDLE;
+        using settings_type = termios;
+        using handle_type = int;
 
         //Read-only
 /*  Inherited
@@ -111,10 +110,10 @@ namespace RS_232{
             ) final override;
 
         //Stream I/O
-            virtual Serial_Port_Windows& operator<<(byte_type) final override;
-            virtual Serial_Port_Windows& operator>>(byte_type&) final override;
-            virtual Serial_Port_Windows& operator<<(str_type) final override;
-            virtual Serial_Port_Windows& operator>>(str_type&) final override;
+            virtual Serial_Port_Linux& operator<<(byte_type) final override;
+            virtual Serial_Port_Linux& operator>>(byte_type&) final override;
+            virtual Serial_Port_Linux& operator<<(str_type) final override;
+            virtual Serial_Port_Linux& operator>>(str_type&) final override;
 
         //Other modifiers
             //Returns if flushing is successful or not
@@ -128,12 +127,12 @@ namespace RS_232{
             virtual bool flush_output(bool force_abort = false) final override;
 
         //Constructors and destructor
-            Serial_Port_Windows(count_type, baud_rate = br_9600, size_type = 0);
-            Serial_Port_Windows(const Serial_Port_Windows&)             = default;
-            Serial_Port_Windows(Serial_Port_Windows&&)                  = default;
-            Serial_Port_Windows& operator=(const Serial_Port_Windows&)  = default;
-            Serial_Port_Windows& operator=(Serial_Port_Windows&&)       = default;
-            virtual ~Serial_Port_Windows();
+            Serial_Port_Linux(count_type, baud_rate = br_9600, size_type = 0);
+            Serial_Port_Linux(const Serial_Port_Linux&)             = default;
+            Serial_Port_Linux(Serial_Port_Linux&&)                  = default;
+            Serial_Port_Linux& operator=(const Serial_Port_Linux&)  = default;
+            Serial_Port_Linux& operator=(Serial_Port_Linux&&)       = default;
+            virtual ~Serial_Port_Linux();
 
         private:
 /*
@@ -145,7 +144,6 @@ namespace RS_232{
 */
         //Port settings
         settings_type   m_port_settings;
-        timeout_type    m_comm_timeout;
         handle_type     m_handle;
     };
 }

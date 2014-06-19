@@ -139,11 +139,11 @@ namespace RS_232{
 
         //Constructors and destructor
             Serial_Port()
-                : Serial_Port(-1, br_110, 0)
+                : Serial_Port(-1, br_9600, 0)
             {}
             Serial_Port(
                 count_type port_number,
-                baud_rate new_baud_rate,
+                baud_rate new_baud_rate = br_9600,
                 size_type new_read_rate = 0
             )
                 : m_connected(false)
