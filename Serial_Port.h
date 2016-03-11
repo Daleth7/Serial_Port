@@ -6,13 +6,13 @@
 namespace RS_232{
     Serial_Port* open_serial_port(
         Serial_Port::count_type port_number = -1,
-        Serial_Port::baud_rate new_baud_rate = Serial_Port::br_110,
+        baud_rate new_baud_rate = br_110,
         Serial_Port::size_type new_read_rate = 0
     );
 #ifdef __LINUX__
     Serial_Port* open_serial_port(
         const Serial_Port::str_type& tty_suffix,
-        Serial_Port::baud_rate new_baud_rate = Serial_Port::br_110,
+        baud_rate new_baud_rate = br_110,
         Serial_Port::size_type new_read_rate = 0
     );
 #endif

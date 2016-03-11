@@ -144,7 +144,6 @@ namespace RS_232{
 
         //Constructors and destructor
             Serial_Port()
-                : 
                 : m_connected(false)
                 , m_port(-1)
                 , m_baud_rate(br_9600)
