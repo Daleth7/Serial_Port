@@ -5,12 +5,32 @@
 #include <string>
 
 namespace RS_232{
-    enum error_code : byte_type {
-        read, write, open, close, unavailable,
-        overflow, hardware,
-        unknown, os_specific,
-        none
+    enum error_code {
+        error_read, error_write, error_open, error_close, error_unavailable,
+        error_overflow, error_hardware,
+        error_unknown, error_os_specific,
+        error_none
     };
+
+//Use standard baud rates of a weakly-typed enumeration
+//  to allow casting to primitive types
+    enum baud_rate {
+        br_110 = 110,
+        br_300 = 300,
+        br_600 = 600,
+        br_1200 = 1200,
+        br_2400 = 2400,
+        br_4800 = 4800,
+        br_9600 = 9600,
+        br_14400 = 14400,
+        br_19200 = 19200,
+        br_28800 = 28800,
+        br_38400 = 38400,
+        br_56000 = 56000,
+        br_57600 = 57600,
+        br_115200 = 115200
+    };
+
     class Serial_Port{
         public:
         //Types and aliases
@@ -29,7 +49,7 @@ namespace RS_232{
                         {return m_msg;}
 
                     error_type()
-                        : m_code(error_code::none)
+                        : m_code(error_none)
                         , m_msg("No error.")
                     {}
                     error_type(error_code c, const vol_str_type& s)
@@ -51,28 +71,9 @@ namespace RS_232{
                     vol_str_type    m_msg;
             };
 
-        //Use standard baud rates of a weakly-typed enumeration
-        //  to allow casting to primitive types
-            enum baud_rate : unsigned long int{
-                br_110 = 110,
-                br_300 = 300,
-                br_600 = 600,
-                br_1200 = 1200,
-                br_2400 = 2400,
-                br_4800 = 4800,
-                br_9600 = 9600,
-                br_14400 = 14400,
-                br_19200 = 19200,
-                br_28800 = 28800,
-                br_38400 = 38400,
-                br_56000 = 56000,
-                br_57600 = 57600,
-                br_115200 = 115200
-            };
-
         //Read-only
             bool good()
-                {return m_error.get_code() == error_type::error_code::none;}
+                {return m_error.get_code() == error_none;}
             bool fail()
                 {return !(this->good());}
             bool is_connected()const
@@ -143,7 +144,12 @@ namespace RS_232{
 
         //Constructors and destructor
             Serial_Port()
-                : Serial_Port(-1, br_9600, 0)
+                : 
+                : m_connected(false)
+                , m_port(-1)
+                , m_baud_rate(br_9600)
+                , m_read_rate(0)
+                , m_error()
             {}
             Serial_Port(
                 count_type port_number,
