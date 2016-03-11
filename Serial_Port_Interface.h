@@ -2,7 +2,6 @@
 #define ABSTRACT_SERIAL_PORT_COMMUNICATIONS_CLASS_H___
 
 #include <cstddef>
-#include <cstdint>
 #include <string>
 
 namespace RS_232{
