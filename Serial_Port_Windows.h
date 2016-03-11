@@ -65,6 +65,7 @@ namespace RS_232{
             baud_rate baud()const;
             size_type read_rate()const;
 */
+            virtual size_type available() const final override;
 
         //Settings modifiers
 /*  Inherited

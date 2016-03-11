@@ -82,6 +82,7 @@ namespace RS_232{
                 {return m_baud_rate;}
             size_type read_rate()const
                 {return m_read_rate;}
+            virtual size_type available() const = 0;
 
         //Settings modifiers
             void set_baud_rate(baud_rate new_rate)
@@ -167,9 +168,9 @@ namespace RS_232{
     };
 }
 
-Serial_Port& getline(
-    Serial_Port&, Serial_Port::vol_str_type&,
-    m Serial_Port::byte_type delim = '\0'
+RS_232::Serial_Port& getline(
+    RS_232::Serial_Port&, RS_232::Serial_Port::vol_str_type&,
+    RS_232::Serial_Port::byte_type delim = '\0'
 );
 
 #endif

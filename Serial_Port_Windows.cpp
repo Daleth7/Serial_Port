@@ -4,6 +4,13 @@
 #include <algorithm>
 
 namespace RS_232{
+    // Read-only
+    Serial_Port_Windows::size_type Serial_Port_Windows::available() const {
+        COMSTAT status;
+        ClearCommError(m_handle, nullptr, &status);
+        return status.cbInQue;
+    }
+
     //Settings modifiers
     const Serial_Port_Windows::error_type& Serial_Port_Windows::check_status(){
         DWORD error_code(0);

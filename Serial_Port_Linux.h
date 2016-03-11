@@ -5,6 +5,14 @@
 
 #include <termios.h>
 
+/*
+    For documentation on the Linux API for serial comminucation, refer to:
+    http://man7.org/linux/man-pages/man3/termios.3.html
+    http://pubs.opengroup.org/onlinepubs/007908775/xsh/fcntl.h.html
+
+    Port number member currently unsupported
+*/
+
 namespace RS_232{
     class Serial_Port_Linux : public Serial_Port{
         public:
@@ -54,7 +62,7 @@ namespace RS_232{
 */
 
         using settings_type = termios;
-        using handle_type = int;
+        using file_descriptor_type = int;
 
         //Read-only
 /*  Inherited
@@ -64,6 +72,7 @@ namespace RS_232{
             baud_rate baud()const;
             size_type read_rate()const;
 */
+            virtual size_type available() const final override;
 
         //Settings modifiers
 /*  Inherited
@@ -79,12 +88,22 @@ namespace RS_232{
                 baud_rate,
                 size_type = 0
             ) final override;
+            virtual bool open(
+                const str_type& tty_suffix, // Example: "USB0"
+                baud_rate,
+                size_type = 0
+            );
             virtual bool close() final override;
             virtual bool change(
                 count_type,
                 baud_rate,
                 size_type = 0
             ) final override;
+            virtual bool change(
+                const str_type& tty_suffix, // Example: "USB0"
+                baud_rate,
+                size_type = 0
+            );
             virtual bool write(byte_type) final override;
             virtual bool read(byte_type&) final override;
             virtual bool write(
@@ -143,8 +162,8 @@ namespace RS_232{
             error_type m_error;
 */
         //Port settings
-        settings_type   m_port_settings;
-        handle_type     m_handle;
+        settings_type           m_port_settings, m_old_settings;
+        file_descriptor_type    m_fd;
     };
 }
 
