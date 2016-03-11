@@ -26,19 +26,19 @@ namespace RS_232{
 
             class error_type{
                 public:
-                    enum class code{
+                    enum class error_code{
                         read, write, open, close, unavailable,
                         overflow, hardware,
                         unknown, os_specific,
                         none
                     };
 
-                    code get_code()const;
+                    error_code get_code()const;
 
                     virtual const vol_str_type& what()const;
 
                     error_type();
-                    error_type(code c, const vol_str_type& s);
+                    error_type(error_code c, const vol_str_type& s);
             };
 
         //Use standard baud rates of a weakly-typed enumeration

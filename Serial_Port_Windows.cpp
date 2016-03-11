@@ -23,26 +23,26 @@ namespace RS_232{
                 break;
             case CE_BREAK:
                 m_error = error_type(
-                    error_type::code::hardware,
+                    error_type::error_code::hardware,
                     "The hardware detected a break condition."
                 );
                 break;
             case CE_FRAME:
                 m_error = error_type(
-                    error_type::code::hardware,
+                    error_type::error_code::hardware,
                     "The hardware detected a framing error."
                 );
                 break;
             case CE_OVERRUN:
                 m_error = error_type(
-                    error_type::code::overflow,
+                    error_type::error_code::overflow,
                     "A character-buffer overrun has occurred. "
                         "The next character is lost."
                 );
                 break;
             case CE_RXOVER:
                 m_error = error_type(
-                    error_type::code::overflow,
+                    error_type::error_code::overflow,
                     "An input buffer overflow has occurred. "
                         "There is either no room in the input buffer, "
                         "or a character was received after the "
@@ -51,12 +51,12 @@ namespace RS_232{
                 break;
             case CE_RXPARITY:
                 m_error = error_type(
-                    error_type::code::hardware,
+                    error_type::error_code::hardware,
                     "The hardware detected a parity error."
                 );
                 break;
             default:
-                m_error = error_type(error_type::code::unknown, "Unknown error.");
+                m_error = error_type(error_type::error_code::unknown, "Unknown error.");
                 break;
         }
         return m_error;
@@ -91,13 +91,13 @@ namespace RS_232{
                 NULL //no template
             ))  == INVALID_HANDLE_VALUE
         ){
-            m_error = error_type(error_type::code::unavailable,
+            m_error = error_type(error_type::error_code::unavailable,
                 "Port #" + ss.str() + " unavailable");
             return false;
         }
 
         if (!GetCommState(m_handle, &m_port_settings)){
-            m_error = error_type(error_type::code::unavailable,
+            m_error = error_type(error_type::error_code::unavailable,
                 "Failed to retrieve port settings.");
             return false;
         }else{
@@ -107,7 +107,7 @@ namespace RS_232{
             m_port_settings.Parity   = NOPARITY;
 
              if(!SetCommState(m_handle, &m_port_settings)){
-                m_error = error_type(error_type::code::unavailable,
+                m_error = error_type(error_type::error_code::unavailable,
                     "Failed to retrieve port settings.");
                 return false;
              }
@@ -142,7 +142,7 @@ namespace RS_232{
     ){
         DWORD writ(0);
         if(!m_connected){
-            m_error = error_type(error_type::code::unavailable,
+            m_error = error_type(error_type::error_code::unavailable,
                 "Attempt to write to unconnected port.");
             return false;
         }else if(!WriteFile(
@@ -152,7 +152,7 @@ namespace RS_232{
             &writ,
             NULL
         )){
-            m_error = error_type(error_type::code::write,
+            m_error = error_type(error_type::error_code::write,
                 "Failure sending data to port.");
             return false;
         }
@@ -168,7 +168,7 @@ namespace RS_232{
     ){
         DWORD num_read(0);
         if(!m_connected){
-            m_error = error_type(error_type::code::unavailable,
+            m_error = error_type(error_type::error_code::unavailable,
                 "Attempt to read from unconnected port.");
             return false;
         }
@@ -190,7 +190,7 @@ namespace RS_232{
                     NULL
                 )
             ){
-                m_error = error_type(error_type::code::read,
+                m_error = error_type(error_type::error_code::read,
                     "Failure retrieving data from port.");
                 return false;
             }
@@ -201,7 +201,7 @@ namespace RS_232{
 
         if(actually_read != NULL)
             *actually_read = 0;
-        m_error = error_type(error_type::code::read,
+        m_error = error_type(error_type::error_code::read,
             "Nothing to read from port.");
         return false;
     }

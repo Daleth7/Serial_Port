@@ -5,6 +5,12 @@
 #include <string>
 
 namespace RS_232{
+    enum error_code : byte_type {
+        read, write, open, close, unavailable,
+        overflow, hardware,
+        unknown, os_specific,
+        none
+    };
     class Serial_Port{
         public:
         //Types and aliases
@@ -16,24 +22,17 @@ namespace RS_232{
 
             class error_type{
                 public:
-                    enum code : byte_type {
-                        read, write, open, close, unavailable,
-                        overflow, hardware,
-                        unknown, os_specific,
-                        none
-                    };
-
-                    code get_code()const
+                    error_code get_code()const
                         {return m_code;}
 
                     virtual const vol_str_type& what()const
                         {return m_msg;}
 
                     error_type()
-                        : m_code(code::none)
+                        : m_code(error_code::none)
                         , m_msg("No error.")
                     {}
-                    error_type(code c, const vol_str_type& s)
+                    error_type(error_code c, const vol_str_type& s)
                         : m_code(c)
                         , m_msg(s)
                     {}
@@ -48,7 +47,7 @@ namespace RS_232{
                     }
                     virtual ~error_type(){}
                 private:
-                    code            m_code;
+                    error_code            m_code;
                     vol_str_type    m_msg;
             };
 
@@ -73,7 +72,7 @@ namespace RS_232{
 
         //Read-only
             bool good()
-                {return m_error.get_code() == error_type::code::none;}
+                {return m_error.get_code() == error_type::error_code::none;}
             bool fail()
                 {return !(this->good());}
             bool is_connected()const

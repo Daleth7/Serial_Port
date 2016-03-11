@@ -65,7 +65,7 @@ namespace RS_232{
             // Attempt to establish connection
         vol_str_type port_path = "/dev/tty" + tty_suffix;
         if((m_fd = open(port_path.c_str(), O_RDWR | O_NDELAY | O_NOCITY)) < 0){
-            m_error = error_type(error_type::code::unavailable,
+            m_error = error_type(error_type::error_code::unavailable,
                 "Port at " + port_path + " unavailable.");
         }
 
@@ -200,7 +200,7 @@ namespace RS_232{
         size_type* actually_written
     ){
         if(!m_connected){
-            m_error = error_type(error_type::code::unavailable,
+            m_error = error_type(error_type::error_code::unavailable,
                 "Attempt to write to unconnected port.");
             return false;
         }
@@ -209,8 +209,8 @@ namespace RS_232{
         if(actually_written != NULL)
             *actually_written = writ;
         if(writ < 0){
-            int err_code = errno;   // Save code in case it changes due to
-                                    //  following code
+            int err_code = errno;   // Save error_code in case it changes due to
+                                    //  following error_code
             vol_str_type err_msg;
 
             switch(err_code){
@@ -257,7 +257,7 @@ namespace RS_232{
                     break;
             }
 
-            m_error = error_type(error_type::code::write, err_msg);
+            m_error = error_type(error_type::error_code::write, err_msg);
             return false;
         }
         return true;
@@ -269,7 +269,7 @@ namespace RS_232{
         size_type* actually_read
     ){
         if(!m_connected){
-            m_error = error_type(error_type::code::unavailable,
+            m_error = error_type(error_type::error_code::unavailable,
                 "Attempt to read from unconnected port.");
             return false;
         }
@@ -278,13 +278,13 @@ namespace RS_232{
         if(actually_read != NULL)
             *actually_read = red;
         if(red == 0){
-            m_error = error_type(error_type::code::read,
+            m_error = error_type(error_type::error_code::read,
                 "Nothing to read from port.");
             return false;
         }
         if(red < 0){
-            int err_code = errno;   // Save code in case it changes due to
-                                    //  following code
+            int err_code = errno;   // Save error_code in case it changes due to
+                                    //  following error_code
             vol_str_type err_msg;
 
             switch(err_code){
@@ -317,7 +317,7 @@ namespace RS_232{
                     break;
             }
 
-            m_error = error_type(error_type::code::write, err_msg);
+            m_error = error_type(error_type::error_code::write, err_msg);
             return false;
         }
         return true;
