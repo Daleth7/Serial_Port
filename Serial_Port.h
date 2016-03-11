@@ -9,7 +9,7 @@ namespace RS_232{
         baud_rate new_baud_rate = br_110,
         Serial_Port::size_type new_read_rate = 0
     );
-#ifdef __LINUX__
+#ifdef __linux__
     Serial_Port* open_serial_port(
         const Serial_Port::str_type& tty_suffix,
         baud_rate new_baud_rate = br_110,

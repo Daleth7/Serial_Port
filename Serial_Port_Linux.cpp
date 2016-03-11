@@ -66,7 +66,7 @@ namespace RS_232{
             // Attempt to establish connection
         vol_str_type port_path = "/dev/tty" + tty_suffix;
         if((m_fd = open(port_path.c_str(), O_RDWR | O_NDELAY | O_NOCITY)) < 0){
-            m_error = error_type(error_type::error_unavailable,
+            m_error = error_type(error_unavailable,
                 "Port at " + port_path + " unavailable.");
         }
 
@@ -142,7 +142,7 @@ namespace RS_232{
             default:    // Terminate connection
                 cfsetispeed(&m_port_settings, B0);
                 cfsetospeed(&m_port_settings, B0);
-                m_error = error_type(error_type::open, "Unsupported baud rate.");
+                m_error = error_type(error_open, "Unsupported baud rate.");
                 return false;
         }
 
@@ -190,10 +190,10 @@ namespace RS_232{
     ){return this->close() && this->open(tty_suffix,new_baud_rate,new_read_rate);}
 
     bool Serial_Port_Linux::write(byte_type ch)
-        {this->write(&ch, 1);}
+        {return this->write(&ch, 1);}
 
     bool Serial_Port_Linux::read(byte_type& ch_dest)
-        {this->read(&ch_dest, 1);}
+        {return this->read(&ch_dest, 1);}
 
     bool Serial_Port_Linux::write(
         const byte_type* buf,
@@ -201,12 +201,12 @@ namespace RS_232{
         size_type* actually_written
     ){
         if(!m_connected){
-            m_error = error_type(error_type::error_unavailable,
+            m_error = error_type(error_unavailable,
                 "Attempt to write to unconnected port.");
             return false;
         }
 
-        size_type writ = write(m_fd, buf, number_to_write);
+        size_type writ = ::write(m_fd, buf, number_to_write);
         if(actually_written != NULL)
             *actually_written = writ;
         if(writ < 0){
@@ -258,7 +258,7 @@ namespace RS_232{
                     break;
             }
 
-            m_error = error_type(error_type::error_write, err_msg);
+            m_error = error_type(error_write, err_msg);
             return false;
         }
         return true;
@@ -270,16 +270,16 @@ namespace RS_232{
         size_type* actually_read
     ){
         if(!m_connected){
-            m_error = error_type(error_type::error_unavailable,
+            m_error = error_type(error_unavailable,
                 "Attempt to read from unconnected port.");
             return false;
         }
 
-        size_type red = read(m_fd, buf, number_to_read);
+        size_type red = ::read(m_fd, buf, number_to_read);
         if(actually_read != NULL)
             *actually_read = red;
         if(red == 0){
-            m_error = error_type(error_type::error_read,
+            m_error = error_type(error_read,
                 "Nothing to read from port.");
             return false;
         }
@@ -318,7 +318,7 @@ namespace RS_232{
                     break;
             }
 
-            m_error = error_type(error_type::error_write, err_msg);
+            m_error = error_type(error_write, err_msg);
             return false;
         }
         return true;
@@ -344,7 +344,7 @@ namespace RS_232{
         size_type i(0);
         do{
             this->read(hold);
-        }while(hold != delim && this->good() && i < num_to_read);
+        }while(hold != delim && this->good() && i < num_to_ignore);
         return *this;
     }
 
@@ -393,7 +393,7 @@ namespace RS_232{
         size_type new_read_rate
     )
         : Serial_Port(port_number, new_br_rate, new_read_rate)
-    {this->open(port_number, new_baud_rate, new_read_rate);}
+    {this->open(port_number, new_br_rate, new_read_rate);}
 
     Serial_Port_Linux::~Serial_Port_Linux(){this->close();}
 
