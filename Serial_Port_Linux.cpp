@@ -6,10 +6,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <termios.h>
 
 namespace RS_232{
     // Read-only
-    Serial_Port_Windows::size_type Serial_Port_Windows::available() const {
+    Serial_Port_Linux::size_type Serial_Port_Linux::available() const {
         size_type toreturn;
         ioctrl(m_fd, FIONREAD, &toreturn);
         return toreturn;
