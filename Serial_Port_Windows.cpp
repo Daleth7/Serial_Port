@@ -7,14 +7,14 @@ namespace RS_232{
     // Read-only
     Serial_Port_Windows::size_type Serial_Port_Windows::available() const {
         COMSTAT status;
-        ClearCommError(m_handle, nullptr, &status);
+        ClearCommError(m_handle, NULL, &status);
         return status.cbInQue;
     }
 
     //Settings modifiers
     const Serial_Port_Windows::error_type& Serial_Port_Windows::check_status(){
         DWORD error_code(0);
-        ClearCommError(m_handle, &error_code, nullptr);
+        ClearCommError(m_handle, &error_code, NULL);
 
         switch(error_code){
         //Error messages are from the msdn website
@@ -85,10 +85,10 @@ namespace RS_232{
                 port_name.c_str(),
                 GENERIC_READ | GENERIC_WRITE,
                 0, //no share
-                nullptr, //no security
+                NULL, //no security
                 OPEN_EXISTING,
                 0, //no threads
-                nullptr //no template
+                NULL //no template
             ))  == INVALID_HANDLE_VALUE
         ){
             m_error = error_type(error_type::code::unavailable,
@@ -150,13 +150,13 @@ namespace RS_232{
             src,
             (src_size == 0 ? m_read_rate : src_size),
             &writ,
-            nullptr
+            NULL
         )){
             m_error = error_type(error_type::code::write,
                 "Failure sending data to port.");
             return false;
         }
-        if(actually_written != nullptr)
+        if(actually_written != NULL)
             *actually_written = writ;
         return true;
     }
@@ -174,7 +174,7 @@ namespace RS_232{
         }
 
         COMSTAT status;
-        ClearCommError(m_handle, nullptr, &status);
+        ClearCommError(m_handle, NULL, &status);
 
         //Check if there is something to read
         if(status.cbInQue>0){
@@ -187,19 +187,19 @@ namespace RS_232{
                         (dest_size == 0 ? m_read_rate : dest_size)
                     ),
                     &num_read,
-                    nullptr
+                    NULL
                 )
             ){
                 m_error = error_type(error_type::code::read,
                     "Failure retrieving data from port.");
                 return false;
             }
-            if(actually_read != nullptr)
+            if(actually_read != NULL)
                 *actually_read = num_read;
             return true;
         }
 
-        if(actually_read != nullptr)
+        if(actually_read != NULL)
             *actually_read = 0;
         m_error = error_type(error_type::code::read,
             "Nothing to read from port.");

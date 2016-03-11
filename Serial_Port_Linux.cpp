@@ -17,7 +17,10 @@ namespace RS_232{
 
 
 //Settings modifiers
-    const error_type& Serial_Port_Linux::check_status(){}
+    const error_type& Serial_Port_Linux::check_status(){
+            // Temporary solution until a way to check port status is found
+        return m_error;
+    }
 
 //C-style I/O
     bool Serial_Port_Linux::open(
@@ -203,7 +206,7 @@ namespace RS_232{
         }
 
         size_type writ = write(m_fd, buf, number_to_write);
-        if(actually_written != nullptr)
+        if(actually_written != NULL)
             *actually_written = writ;
         if(writ < 0){
             int err_code = errno;   // Save code in case it changes due to
@@ -272,7 +275,7 @@ namespace RS_232{
         }
 
         size_type red = read(m_fd, buf, number_to_read);
-        if(actually_read != nullptr)
+        if(actually_read != NULL)
             *actually_read = red;
         if(red == 0){
             m_error = error_type(error_type::code::read,

@@ -61,8 +61,8 @@ namespace RS_232{
             };
 */
 
-        using settings_type = termios;
-        using file_descriptor_type = int;
+        typedef termios settings_type;
+        typedef int file_descriptor_type;
 
         //Read-only
 /*  Inherited
@@ -72,7 +72,7 @@ namespace RS_232{
             baud_rate baud()const;
             size_type read_rate()const;
 */
-            virtual size_type available() const final override;
+            virtual size_type available() const;
 
         //Settings modifiers
 /*  Inherited
@@ -80,59 +80,59 @@ namespace RS_232{
             void set_read_rate(size_type bytes_to_read);
             void clear_error();
 */
-            virtual const error_type& check_status() final override;
+            virtual const error_type& check_status();
 
         //C-style I/O
             virtual bool open(
                 count_type,
                 baud_rate,
                 size_type = 0
-            ) final override;
+            );
             virtual bool open(
                 const str_type& tty_suffix, // Example: "USB0"
                 baud_rate,
                 size_type = 0
             );
-            virtual bool close() final override;
+            virtual bool close();
             virtual bool change(
                 count_type,
                 baud_rate,
                 size_type = 0
-            ) final override;
+            );
             virtual bool change(
                 const str_type& tty_suffix, // Example: "USB0"
                 baud_rate,
                 size_type = 0
             );
-            virtual bool write(byte_type) final override;
-            virtual bool read(byte_type&) final override;
+            virtual bool write(byte_type);
+            virtual bool read(byte_type&);
             virtual bool write(
                 const byte_type*,
                 size_type = 0,
-                size_type* = nullptr //Optional request to get number of
+                size_type* = NULL //Optional request to get number of
                                     // bytes written
-            ) final override;
+            );
             virtual bool read(
                 byte_type*,
                 size_type = 0,
-                size_type* = nullptr //Optional request to get number of
+                size_type* = NULL //Optional request to get number of
                                     // bytes read
-            ) final override;
+            );
             virtual Serial_Port& getline(
                 byte_type* buf,
                 size_type num_to_read,
                 byte_type delim = '\0'
-            ) final override;
+            );
             virtual Serial_Port& ignore(
                 size_type num_to_ignore,
                 byte_type delim = '\0'
-            ) final override;
+            );
 
         //Stream I/O
-            virtual Serial_Port_Linux& operator<<(byte_type) final override;
-            virtual Serial_Port_Linux& operator>>(byte_type&) final override;
-            virtual Serial_Port_Linux& operator<<(str_type) final override;
-            virtual Serial_Port_Linux& operator>>(str_type&) final override;
+            virtual Serial_Port_Linux& operator<<(byte_type);
+            virtual Serial_Port_Linux& operator>>(byte_type&);
+            virtual Serial_Port_Linux& operator<<(str_type);
+            virtual Serial_Port_Linux& operator>>(str_type&);
 
         //Other modifiers
             //Returns if flushing is successful or not
@@ -141,16 +141,29 @@ namespace RS_232{
                 bool force_abort = false    //Terminates read or write
                                             //  operations even if they
                                             //  have not been completed.
-            ) final override;
-            virtual bool flush_input(bool force_abort = false) final override;
-            virtual bool flush_output(bool force_abort = false) final override;
+            );
+            virtual bool flush_input(bool force_abort = false);
+            virtual bool flush_output(bool force_abort = false);
 
         //Constructors and destructor
             Serial_Port_Linux(count_type, baud_rate = br_9600, size_type = 0);
-            Serial_Port_Linux(const Serial_Port_Linux&)             = default;
-            Serial_Port_Linux(Serial_Port_Linux&&)                  = default;
-            Serial_Port_Linux& operator=(const Serial_Port_Linux&)  = default;
-            Serial_Port_Linux& operator=(Serial_Port_Linux&&)       = default;
+            Serial_Port_Linux(const Serial_Port_Linux& e)
+                : Serial_Port(e.m_port, e.m_baud_rate, e.m_read_rate)
+                , m_port_settings(e.m_port_settings)
+                , m_old_settings(e.m_old_settings)
+                , m_fd(e.m_fd)
+            {}
+            Serial_Port_Linux& operator=(const Serial_Port_Linux& sp2){
+                this->m_connected = sp2.m_connected;
+                this->m_port = sp2.m_port;
+                this->m_baud_rate = sp2.m_baud_rate;
+                this->m_read_rate = sp2.m_read_rate;
+                this->m_error = sp2.m_error;
+                this->m_port_settings = sp2.m_port_settings;
+                this->m_old_settings = sp2.m_old_settings;
+                this->m_fd = sp2.m_fd;
+                return *this;
+            }
             virtual ~Serial_Port_Linux();
 
         private:
@@ -158,6 +171,7 @@ namespace RS_232{
     //Inherited
             bool m_connected;
             count_type m_port;
+            size_type m_baud_rate;
             size_type m_read_rate;
             error_type m_error;
 */
